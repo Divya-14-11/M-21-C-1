@@ -37,3 +37,34 @@ plt.ylabel("NUMBER OF MOVIES")
 plt.xticks(rotation=45,ha="right")
 plt.tight_layout()
 plt.show()
+
+user_input = [
+    {"title":"3 idots","ratings":10},
+    {"title":"BHULBHULIYA","ratings":7},
+    {"title":"DRISHYAM","ratings":9},
+    {"title":"DHAMAL","ratings":10},
+    {"title":"Toy Story","ratings":6},
+    {"title":"Jumanji","ratings":3},
+    {"title":"Grumpier Old Men","ratings":7},
+    {"title":"Waiting to Exhale","ratings":1}
+]
+movie_input = pd.DataFrame(user_input)
+print(movie_input)
+input_id = data[data["title"].isin(movie_input["title"].tolist())]
+movie_input = pd.merge(input_id,movie_input)
+movie_input = movie_input.drop(["genres","year"],axis = 1)
+print(movie_input)
+movie_user = movies[movies["movieId"].isin(movie_input["movieId"].tolist())]
+movie_user = movie_user.reset_index(drop=True)
+user_generated_table = movie_user.drop(["movieId","title","genres","year"],axis = 1)
+user_profile = user_generated_table.transpose().dot(movie_input["ratings"])
+print(user_profile)
+
+plt.figure(figsize = (10,5))
+plt.bar(user_profile.index,user_profile.values,color = "brown")
+plt.title("taste_profile")
+plt.xlabel("genres")
+plt.ylabel("weight")
+plt.xticks(rotation = 45, ha = "right")
+plt.tight_layout()
+plt.show()
